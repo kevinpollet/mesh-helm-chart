@@ -1,0 +1,19 @@
+---
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: traefik-mesh-identity
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: maesh
+    component: identity
+    chart: {{ include "traefikMesh.chartLabel" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: maesh
+      component: identity
+      release: {{ .Release.Name }}

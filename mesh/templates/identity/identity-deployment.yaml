@@ -1,0 +1,78 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traefik-mesh-identity
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: maesh
+    component: identity
+    chart: {{ include "traefikMesh.chartLabel" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: maesh
+      component: identity
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: maesh
+        component: identity
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: traefik-mesh-identity
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+      {{- if .Values.controller.image.pullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.controller.image.pullSecret }}
+      {{- end }}
+      {{- with .Values.identity.nodeSelector }}
+      nodeSelector:
+      {{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.identity.affinity }}
+      affinity:
+      {{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.identity.tolerations }}
+      tolerations:
+      {{ toYaml . | indent 8 }}
+      {{- end }}
+      containers:
+        - name: traefik-mesh-identity
+          image: {{ include "traefikMesh.controllerImage" . }}
+          imagePullPolicy: {{ .Values.controller.image.pullPolicy | default "IfNotPresent" }}
+          args:
+            - identity
+            {{- if or .Values.identity.logLevel .Values.logLevel }}
+            - --logLevel={{ or .Values.identity.logLevel .Values.logLevel }}
+            {{- end }}
+            {{- if or .Values.identity.logFormat .Values.logFormat }}
+            - --logFormat={{ or .Values.identity.logFormat .Values.logFormat }}
+            {{- end }}
+            - --namespace={{ .Release.Namespace }}
+            - --clusterDomain={{ default "cluster.local" .Values.clusterDomain }}
+            - --serviceName=traefik-mesh-identity
+            - --proxyServiceAccountName=traefik-mesh-proxy
+          ports:
+            - name: api
+              containerPort: 8443
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: api
+              scheme: HTTPS
+            initialDelaySeconds: 3
+            periodSeconds: 1
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: api
+              scheme: HTTPS
+            initialDelaySeconds: 3
+            periodSeconds: 1

@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: traefik-mesh-identity
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: maesh
+    component: identity
+    chart: {{ include "traefikMesh.chartLabel" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+automountServiceAccountToken: true

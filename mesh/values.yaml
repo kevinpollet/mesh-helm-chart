@@ -48,6 +48,17 @@ controller:
   tolerations: []
   affinity: {}
 
+identity:
+  # logLevel: error
+  # logFormat: common
+
+  # serviceName: traefik-mesh-identity
+
+  # Added so we can launch on nodes with restrictions.
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
 proxy:
   image:
     name: traefik

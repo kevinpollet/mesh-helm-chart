@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: traefik-mesh-identity
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: maesh
+    component: identity
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8443
+      targetPort: api
+  selector:
+    app: maesh
+    component: identity
+    release: {{ .Release.Name }}
