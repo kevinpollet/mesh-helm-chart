@@ -46,7 +46,9 @@ spec:
               type: array
               items:
                 type: object
-                required: ['kind', 'name']
+                required:
+                  - kind
+                  - name
                 properties:
                   kind:
                     description: Kind of the matching group.
@@ -61,7 +63,9 @@ spec:
               type: array
               items:
                 type: object
-                required: ['service', 'weight']
+                required:
+                  - service
+                  - weight
                 properties:
                   service:
                     description: Name of the Kubernetes service.

@@ -51,7 +51,7 @@ spec:
                       type: string
                       description: The HTTP method of this HTTP route.
                       enum:
-                        - '*'
+                        - "*"
                         - GET
                         - HEAD
                         - PUT

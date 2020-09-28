@@ -8,9 +8,9 @@ metadata:
   labels:
     app: maesh
     component: coredns
-    chart: {{ include "traefikMesh.chartLabel" . | quote }}
-    release: {{ .Release.Name | quote}}
-    heritage: {{ .Release.Service | quote}}
+    chart: {{ include "traefikMesh.chartLabel" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   replicas: 2
   strategy:
@@ -21,13 +21,13 @@ spec:
     matchLabels:
       app: maesh
       component: coredns
-      release: {{ .Release.Name | quote }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
         app: maesh
         component: coredns
-        release: {{ .Release.Name | quote }}
+        release: {{ .Release.Name }}
     spec:
       serviceAccountName: traefik-mesh-coredns
       affinity:
@@ -45,10 +45,10 @@ spec:
                       operator: In
                       values:
                         - coredns
-                topologyKey: "kubernetes.io/hostname"
+                topologyKey: kubernetes.io/hostname
       tolerations:
-        - key: "CriticalAddonsOnly"
-          operator: "Exists"
+        - key: CriticalAddonsOnly
+          operator: Exists
       nodeSelector:
         beta.kubernetes.io/os: linux
       containers:
@@ -61,7 +61,9 @@ spec:
             requests:
               cpu: 100m
               memory: 70Mi
-          args: [ "-conf", "/etc/coredns/Corefile" ]
+          args:
+            - -conf
+            - /etc/coredns/Corefile
           volumeMounts:
             - name: config-volume
               mountPath: /etc/coredns

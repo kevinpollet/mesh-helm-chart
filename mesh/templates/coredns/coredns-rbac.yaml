@@ -6,9 +6,9 @@ metadata:
   labels:
     app: maesh
     component: coredns
-    chart: {{ include "traefikMesh.chartLabel" . | quote }}
-    release: {{ .Release.Name | quote}}
-    heritage: {{ .Release.Service | quote}}
+    chart: {{ include "traefikMesh.chartLabel" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
   name: traefik-mesh-coredns-role
   namespace: {{ .Release.Namespace }}
 rules:
@@ -38,9 +38,9 @@ metadata:
   labels:
     app: maesh
     component: coredns
-    chart: {{ include "traefikMesh.chartLabel" . | quote }}
-    release: {{ .Release.Name | quote}}
-    heritage: {{ .Release.Service | quote}}
+    chart: {{ include "traefikMesh.chartLabel" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
   annotations:
     rbac.authorization.kubernetes.io/autoupdate: "true"
 roleRef:

@@ -8,17 +8,17 @@ metadata:
   labels:
     app: maesh
     component: coredns
-    chart: {{ include "traefikMesh.chartLabel" . | quote }}
-    release: {{ .Release.Name | quote}}
-    heritage: {{ .Release.Service | quote}}
+    chart: {{ include "traefikMesh.chartLabel" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
   annotations:
-    prometheus.io/port: "9153"
     prometheus.io/scrape: "true"
+    prometheus.io/port: "9153"
 spec:
   selector:
     app: maesh
     component: coredns
-    release: {{ .Release.Name | quote }}
+    release: {{ .Release.Name }}
   type: ClusterIP
   ports:
     - name: dns

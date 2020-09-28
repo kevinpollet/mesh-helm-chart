@@ -8,9 +8,9 @@ metadata:
   labels:
     app: maesh
     component: prometheus
-    chart: {{ include "traefikMesh.chartLabel" . | quote }}
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
+    chart: {{ include "traefikMesh.chartLabel" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 data:
   general.yaml: |
     groups:
@@ -31,9 +31,9 @@ metadata:
   labels:
     app: maesh
     component: prometheus
-    chart: {{ include "traefikMesh.chartLabel" . | quote }}
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
+    chart: {{ include "traefikMesh.chartLabel" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 data:
   prometheus.yaml: |
     global:
@@ -44,7 +44,7 @@ data:
       - "/prometheus/rules/*.yaml"
 
     scrape_configs:
-      - job_name: 'traefik-mesh'
+      - job_name: traefik-mesh
         relabel_configs:
           - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
             action: keep
@@ -73,9 +73,9 @@ metadata:
   labels:
     app: maesh
     component: prometheus
-    chart: {{ include "traefikMesh.chartLabel" . | quote }}
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
+    chart: {{ include "traefikMesh.chartLabel" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   replicas: 1
   selector:
@@ -96,77 +96,81 @@ spec:
         runAsUser: 1000
         runAsNonRoot: true
       containers:
-      - name: prometheus
-        image: {{ .Values.image.prometheus | quote }}
-        args:
-          - '--storage.tsdb.retention=60d'
-          - '--storage.tsdb.path="/prometheus/data/"'
-          - '--web.enable-lifecycle'
-          - '--config.file=/prometheus/config/prometheus.yaml'
-        ports:
-        - name: webui
-          containerPort: 9090
-        readinessProbe:
-          httpGet:
-            path: "/-/ready"
-            port: webui
-          initialDelaySeconds: 5
-        livenessProbe:
-          httpGet:
-            path: "/-/healthy"
-            port: webui
-          initialDelaySeconds: 5
-        {{- if .Values.prometheus.resources }}
-        {{- toYaml .Values.prometheus.resources | indent 8 }}
-        {{- end }}
-        volumeMounts:
-        - name: config-volume
-          mountPath: /prometheus/config
-        - name: rules-volume
-          mountPath: /prometheus/rules
-        - name: prometheus-storage
-          mountPath: /prometheus
-      - name: configmap-reload
-        image: {{ .Values.image.configmapReload | quote }}
-        imagePullPolicy: IfNotPresent
-        args:
-          - --volume-dir=/etc/config
-          - --volume-dir=/etc/rules
-          - --webhook-url=http://localhost:9090/-/reload
-        volumeMounts:
-          - name: config-volume
-            mountPath: /etc/config
-            readOnly: true
-          - name: rules-volume
-            mountPath: /etc/rules
-            readOnly: true
-        resources:
-          limits:
-            cpu: 10m
-            memory: 15Mi
-          requests:
-            cpu: 10m
-            memory: 10Mi
+        - name: prometheus
+          image: {{ .Values.image.prometheus }}
+          args:
+            - --storage.tsdb.retention=60d
+            - --storage.tsdb.path=/prometheus/data/
+            - --web.enable-lifecycle
+            - --config.file=/prometheus/config/prometheus.yaml
+          ports:
+            - name: webui
+              containerPort: 9090
+          readinessProbe:
+            httpGet:
+              path: /-/ready
+              port: webui
+            initialDelaySeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /-/healthy
+              port: webui
+            initialDelaySeconds: 5
+          {{- if .Values.prometheus.resources }}
+          {{- toYaml .Values.prometheus.resources | indent 8 }}
+          {{- end }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /prometheus/config
+            - name: rules-volume
+              mountPath: /prometheus/rules
+            - name: prometheus-storage
+              mountPath: /prometheus
+        - name: configmap-reload
+          image: {{ .Values.image.configmapReload }}
+          imagePullPolicy: IfNotPresent
+          args:
+            - --volume-dir=/etc/config
+            - --volume-dir=/etc/rules
+            - --webhook-url=http://localhost:9090/-/reload
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/config
+              readOnly: true
+            - name: rules-volume
+              mountPath: /etc/rules
+              readOnly: true
+          resources:
+            limits:
+              cpu: 10m
+              memory: 15Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
       initContainers:
-      - name: prometheus-storage-permission-fix
-        image: busybox
-        command: ["/bin/chown", "-R", "1000:2000", "/prometheus"]
-        securityContext:
-          runAsNonRoot: false
-          runAsUser: 0
-        volumeMounts:
-        - name: prometheus-storage
-          mountPath: /prometheus
+        - name: prometheus-storage-permission-fix
+          image: busybox
+          command:
+            - /bin/chown
+            - -R
+            - 1000:2000
+            - /prometheus
+          securityContext:
+            runAsNonRoot: false
+            runAsUser: 0
+          volumeMounts:
+            - name: prometheus-storage
+              mountPath: /prometheus
       volumes:
-      - name: prometheus-storage
-        persistentVolumeClaim:
-          claimName: prometheus-storage
-      - name: config-volume
-        configMap:
-          name: prometheus-core
-      - name: rules-volume
-        configMap:
-          name: prometheus-rules
+        - name: prometheus-storage
+          persistentVolumeClaim:
+            claimName: prometheus-storage
+        - name: config-volume
+          configMap:
+            name: prometheus-core
+        - name: rules-volume
+          configMap:
+            name: prometheus-rules
 
 ---
 apiVersion: v1
@@ -177,11 +181,11 @@ metadata:
   labels:
     app: maesh
     component: prometheus
-    chart: {{ include "traefikMesh.chartLabel" . | quote }}
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
+    chart: {{ include "traefikMesh.chartLabel" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
   annotations:
-    prometheus.io/scrape: 'true'
+    prometheus.io/scrape: "true"
 spec:
   type: {{ .Values.prometheus.service.type }}
   ports:

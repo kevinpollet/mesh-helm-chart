@@ -7,17 +7,17 @@ metadata:
   labels:
     app: maesh
     component: grafana
-    chart: {{ include "traefikMesh.chartLabel" . | quote }}
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
+    chart: {{ include "traefikMesh.chartLabel" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   accessModes:
-  - ReadWriteOnce
+    - ReadWriteOnce
   resources:
     requests:
       storage: 10Gi
   {{- if .Values.grafana.storageClassName }}
-  storageClassName: "{{ .Values.grafana.storageClassName }}"
+  storageClassName: {{ .Values.grafana.storageClassName }}
   {{- end }}
 
 ---
@@ -29,15 +29,15 @@ metadata:
   labels:
     app: maesh
     component: prometheus
-    chart: {{ include "traefikMesh.chartLabel" . | quote }}
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
+    chart: {{ include "traefikMesh.chartLabel" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   accessModes:
-  - ReadWriteOnce
+    - ReadWriteOnce
   resources:
     requests:
       storage: 10Gi
   {{- if .Values.prometheus.storageClassName }}
-  storageClassName: "{{ .Values.prometheus.storageClassName }}"
+  storageClassName: {{ .Values.prometheus.storageClassName }}
   {{- end }}

@@ -7,13 +7,13 @@ metadata:
   labels:
     app: maesh
     component: controller
-    chart: {{ include "traefikMesh.chartLabel" . | quote }}
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
+    chart: {{ include "traefikMesh.chartLabel" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   minAvailable: 1
   selector:
     matchLabels:
       app: maesh
       component: controller
-      release: {{ .Release.Name | quote }}
+      release: {{ .Release.Name }}

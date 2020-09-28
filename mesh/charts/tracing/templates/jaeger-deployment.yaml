@@ -48,7 +48,7 @@ spec:
         runAsUser: 999
       containers:
         - name: jaeger
-          image: {{ .Values.image.jaeger | quote }}
+          image: {{ .Values.image.jaeger }}
           env:
             - name: JAEGER_DISABLED
               value: "true"
@@ -84,7 +84,7 @@ spec:
               name: serve-frontend
           readinessProbe:
             httpGet:
-              path: "/"
+              path: /
               port: readiness
             initialDelaySeconds: 5
           livenessProbe:
@@ -93,8 +93,8 @@ spec:
             initialDelaySeconds: 5
           resources:
             requests:
-              memory: "50Mi"
-              cpu: "100m"
+              memory: 50Mi
+              cpu: 100m
             limits:
-              memory: "100Mi"
-              cpu: "200m"
+              memory: 100Mi
+              cpu: 200m

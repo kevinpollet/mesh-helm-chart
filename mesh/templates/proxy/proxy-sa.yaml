@@ -7,7 +7,7 @@ metadata:
   labels:
     app: maesh
     component: maesh-mesh
-    chart: {{ include "traefikMesh.chartLabel" . | quote}}
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
+    chart: {{ include "traefikMesh.chartLabel" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 automountServiceAccountToken: false

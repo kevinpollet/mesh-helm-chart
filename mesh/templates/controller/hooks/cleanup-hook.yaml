@@ -7,13 +7,13 @@ metadata:
   labels:
     app: maesh
     component: cleanup
-    chart: {{ include "traefikMesh.chartLabel" . | quote}}
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
+    chart: {{ include "traefikMesh.chartLabel" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
   annotations:
-    "helm.sh/hook": "post-delete"
-    "helm.sh/hook-weight": "5"
-    "helm.sh/hook-delete-policy": "hook-succeeded,before-hook-creation"
+    helm.sh/hook: post-delete
+    helm.sh/hook-weight: "5"
+    helm.sh/hook-delete-policy: hook-succeeded,before-hook-creation
 
 ---
 kind: ClusterRole
@@ -24,13 +24,13 @@ metadata:
   labels:
     app: maesh
     component: cleanup
-    chart: {{ include "traefikMesh.chartLabel" . | quote}}
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
+    chart: {{ include "traefikMesh.chartLabel" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
   annotations:
-    "helm.sh/hook": "post-delete"
-    "helm.sh/hook-weight": "10"
-    "helm.sh/hook-delete-policy": "hook-succeeded,before-hook-creation"
+    helm.sh/hook: post-delete
+    helm.sh/hook-weight: "10"
+    helm.sh/hook-delete-policy: hook-succeeded,before-hook-creation
 rules:
   - apiGroups:
       - ""
@@ -65,13 +65,13 @@ metadata:
   labels:
     app: maesh
     component: cleanup
-    chart: {{ include "traefikMesh.chartLabel" . | quote}}
-    release: {{ .Release.Name | quote }}
-    heritage: {{ .Release.Service | quote }}
+    chart: {{ include "traefikMesh.chartLabel" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
   annotations:
-    "helm.sh/hook": "post-delete"
-    "helm.sh/hook-weight": "15"
-    "helm.sh/hook-delete-policy": "hook-succeeded,before-hook-creation"
+    helm.sh/hook: post-delete
+    helm.sh/hook-weight: "15"
+    helm.sh/hook-delete-policy: hook-succeeded,before-hook-creation
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -90,13 +90,13 @@ metadata:
   labels:
     app: maesh
     component: cleanup
-    chart: {{ include "traefikMesh.chartLabel" . | quote }}
-    release: {{ .Release.Name | quote}}
-    heritage: {{ .Release.Service | quote}}
+    chart: {{ include "traefikMesh.chartLabel" . }}
+    release: {{ .Release.Name}}
+    heritage: {{ .Release.Service}}
   annotations:
-    "helm.sh/hook": "post-delete"
-    "helm.sh/hook-weight": "20"
-    "helm.sh/hook-delete-policy": "hook-succeeded,before-hook-creation"
+    helm.sh/hook: post-delete
+    helm.sh/hook-weight: "20"
+    helm.sh/hook-delete-policy: hook-succeeded,before-hook-creation
 spec:
   backoffLimit: 0
   activeDeadlineSeconds: 30
@@ -105,7 +105,7 @@ spec:
       labels:
         app: maesh
         component: cleanup
-        release: {{ .Release.Name | quote}}
+        release: {{ .Release.Name}}
     spec:
       serviceAccountName: traefik-mesh-cleanup
       restartPolicy: Never
@@ -115,17 +115,17 @@ spec:
       {{- end }}
       containers:
         - name: traefik-mesh-cleanup
-          image: {{ include "traefikMesh.controllerImage" . | quote }}
+          image: {{ include "traefikMesh.controllerImage" . }}
           imagePullPolicy: {{ .Values.controller.image.pullPolicy | default "IfNotPresent" }}
           args:
-            - "cleanup"
+            - cleanup
             {{- if or .Values.controller.logLevel .Values.logLevel }}
-            - "--logLevel={{ or .Values.controller.logLevel .Values.logLevel }}"
+            - --logLevel={{ or .Values.controller.logLevel .Values.logLevel }}
             {{- end }}
             {{- if or .Values.controller.logFormat .Values.logFormat }}
-            - "--logFormat={{ or .Values.controller.logFormat .Values.logFormat }}"
+            - --logFormat={{ or .Values.controller.logFormat .Values.logFormat }}
             {{- end }}
-            - "--namespace={{ .Release.Namespace }}"
+            - --namespace={{ .Release.Namespace }}
           securityContext:
             capabilities:
               drop:
