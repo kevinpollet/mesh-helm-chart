@@ -55,6 +55,9 @@ spec:
             {{- if or .Values.identity.logFormat .Values.logFormat }}
             - --logFormat={{ or .Values.identity.logFormat .Values.logFormat }}
             {{- end }}
+            {{- if or .Values.identity.trustDomain }}
+            - --trustDomain={{ .Values.identity.trustDomain }}
+            {{- end }}
             - --namespace={{ .Release.Namespace }}
             - --clusterDomain={{ default "cluster.local" .Values.clusterDomain }}
             - --serviceName=traefik-mesh-identity
