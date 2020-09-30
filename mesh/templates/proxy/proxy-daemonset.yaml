@@ -51,6 +51,30 @@ spec:
 {{ toYaml . | indent 8 }}
       {{- end }}
       containers:
+        - name: traefik-mesh-identity-agent
+          image: {{ include "traefikMesh.controllerImage" . }}
+          imagePullPolicy: {{ .Values.proxy.image.pullPolicy | default "IfNotPresent" }}
+          env:
+            - name: SERVICE_ACCOUNT_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.serviceAccountName
+          args:
+            - identity
+            - agent
+            {{- if or .Values.identity.logLevel .Values.logLevel }}
+            - --logLevel={{ or .Values.identity.logLevel .Values.logLevel }}
+            {{- end }}
+            {{- if or .Values.identity.logFormat .Values.logFormat }}
+            - --logFormat={{ or .Values.identity.logFormat .Values.logFormat }}
+            {{- end }}
+            {{- if or .Values.identity.trustDomain }}
+            - --trustDomain={{ .Values.identity.trustDomain }}
+            {{- end }}
+            - --namespace={{ .Release.Namespace }}
+            - --serviceAccountName=$(SERVICE_ACCOUNT_NAME)
+            - {{ printf "--issuerURL=https://traefik-mesh-identity.%s.svc.%s:8443" .Release.Namespace (default "cluster.local" .Values.clusterDomain) }}
+
         - name: traefik-mesh-proxy
           image: {{ include "traefikMesh.proxyImage" . }}
           imagePullPolicy: {{ .Values.proxy.image.pullPolicy | default "IfNotPresent" }}

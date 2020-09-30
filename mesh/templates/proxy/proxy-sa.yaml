@@ -10,4 +10,4 @@ metadata:
     chart: {{ include "traefikMesh.chartLabel" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-automountServiceAccountToken: false
+automountServiceAccountToken: true
